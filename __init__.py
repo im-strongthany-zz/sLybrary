@@ -5,8 +5,12 @@ import urllib.request
 from werkzeug.utils import secure_filename
 
 ALLOWED_EXTENSIONS = set(['pdf'])
+UPLOAD_FOLDER = './test_books'
 
 app = Flask(__name__, template_folder='src_DB/templates')
+app.secret_key = "secret key"
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 def allowed_file(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
