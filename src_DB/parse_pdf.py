@@ -1,8 +1,19 @@
 from pdfminer.pdfparser import PDFParser
 from pdfminer.pdfdocument import PDFDocument
+import os
 
-fp = open("/home/marta/sLybrary/src_DB/Books/[Brian_W._Kernighan,_Dennis_M._Ritchie]_The__C_Pro(BookZZ.org).pdf")
-parser = PDFParser(fp)
-doc = PDFDocument(parser)
+folderpath = r"./Books"
+filepaths = [os.path.join(folderpath,name) for name in os.listdir(folderpath)]
+all_files = []
 
-print(doc.info)
+for path in filepaths:
+    with open(path, 'rb') as fp:
+        parser = PDFParser(fp)
+        doc = PDFDocument(parser)
+        print(doc.info)
+
+#fp = open("./Books/Linux-101-Hacks.pdf", "rb")
+#parser = PDFParser(fp)
+#doc = PDFDocument(parser)
+
+#print(doc.info)
