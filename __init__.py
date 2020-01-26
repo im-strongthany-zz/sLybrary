@@ -1,5 +1,5 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort
-from .form import BookSearchForm
+from form import BookSearchForm
 import os
 
 app = Flask(__name__, template_folder='src_DB/templates')
