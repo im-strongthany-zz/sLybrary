@@ -7,9 +7,8 @@ import datetime
 import pprint
 
 
-folderpath = r"./Books"
+folderpath = r"./books"
 filepaths = [os.path.join(folderpath,name) for name in os.listdir(folderpath)]
-
 # create a variable for the database
 client = MongoClient("mongodb+srv://admin:openSourceTextbooks@slybrary-jbhct.gcp.mongodb.net/test?retryWrites=true&w=majority")
 db = client["MinneHack2020"]
