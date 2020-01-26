@@ -18,20 +18,22 @@
     </p>
     
     {% from "_formhelpers.html" import render_field %}
-    <form method=post>
+    <form method=post action="/results" enctype="multipart/form-data">
       <dl>
         {{ render_field(form.select) }}
         <p>
         {{ render_field(form.search) }}
       </dl>
       <p><input type=submit value=Search>
-        <dl>
-    		<p>
-        </dl>
-        <p>
-    			<input type="file" name="file" autocomplete="off" required>
+    </form>
+
+    <form method="post" action="/upload" enctype="multipart/form-data">
+      <dl>
+      <p>
+        <input type="file" name="file" autocomplete="off" required>
       </p>
       </dl>
       <p>
       <input type="submit" value="Submit">
+      </p>
     </form>

@@ -1,19 +1,20 @@
-
 from PyPDF2 import PdfFileReader
 import pdftitle
-from pdf2image import convert_from_path
-import textract
-import pytesseract
-from tesserocr import PyTessBaseAPI, iterate_level, RIL
+# import pdfx
 import os
-from PIL import Image
-import io
+from pymongo import MongoClient
+import datetime
+import pprint
+from bson.binary import Binary
+from pdf2image import convert_from_path
+from tesserocr import PyTessBaseAPI, iterate_level, RIL
 
-#adds all the books to a list
-folderpath = r"../test_books"
-filepaths = [os.path.join(folderpath,name) for name in os.listdir(folderpath)]
-all_files = []
-
+# folderpath = r"./books"
+# filepaths = [os.path.join(folderpath,name) for name in os.listdir(folderpath)]
+# create a variable for the database
+client = MongoClient("mongodb+srv://admin:openSourceTextbooks@slybrary-jbhct.gcp.mongodb.net/test?retryWrites=true&w=majority")
+db = client["sLybrary"]
+collection = db['test_books']
 temp_file = ".temp_frontpage.jpg"
 
 def extractTitle(fp, pdf, page):
@@ -26,7 +27,7 @@ def extractTitle(fp, pdf, page):
         title = pdftitle.get_title_from_io(fp)
         return title
 
-def orcTitle():
+def orcTitle(path):
      # make first page into jpeg
     page = convert_from_path(path, first_page=0, last_page = 1)[0]
     page.save(temp_file, 'JPEG') 
@@ -70,45 +71,45 @@ def orcTitle():
 
         os.remove(temp_file)
         return title
-    
-
-#loops through the list and prints metadata for each book
-for path in filepaths:
+        
+def pdfToMongo(path):
     # print filepath
     print(path)
 
     # make sure it's a pdf
     extension = os.path.splitext(path)[1]
     if(extension == ".pdf"):
-        with open(path, 'rb') as fp:
-            # use pypdf2 to read metadata
-            pdf = PdfFileReader(fp)
-            info = pdf.getDocumentInfo()
-            print("\tMETADATA:")
-            for k, v in info.items():
-                print("\t\t", k, ": ", v)
+        # use pypdf2 to read metadata
+        fp = open(path, 'rb')
+        pdf = PdfFileReader(fp)
+        info = pdf.getDocumentInfo()
+        encoded = Binary(fp.read())
+        # print("\tMETADATA:")
+        # for k, v in info.items():
+        #     print("\t\t", k, ": ", v)
 
-            # use title from metadata
-            title = info.title
+        # use title from metadata
+        title = info.title
 
-            # if not present
+        # if not present
+        if title is None or title == '':
+            # extract title from first page
+            title = extractTitle(fp, pdf, 0)
+
+            #if cannot extract
             if title is None or title == '':
-                # extract title from first page
-                title = extractTitle(fp, pdf, 0)
+                # attempt to extract from image
+                title = orcTitle(path)
 
-                #if cannot extract
-                if title is None or title == '':
-                    # attempt to extract from image
-                    title = orcTitle()
-                    # text = textract.process(temp_file)
-                    # print(text)
-                    # os.remove(temp_file)
-                    # print("\tTitle: Cannot parse text on first page")
+        post = {
+            "title": title,
+            "import_date": datetime.datetime.utcnow(),
+            "file": encoded,
+            "tags": ["pdf"]
+        }
 
-            if title is not None:
-                print("\tTITLE: '" + title + "'")
-            else:
-                print("\tTITLE: (none extracted)")
-
+        # create an object for your PDF data, then insert it into the database
+        post_id = collection.insert_one(post).inserted_id        
+    
     else:
         print("\tNOT A PDF")
