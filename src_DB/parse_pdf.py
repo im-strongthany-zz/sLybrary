@@ -1,15 +1,16 @@
 from pdfminer.pdfparser import PDFParser
 from pdfminer.pdfdocument import PDFDocument
-import pdftitle
-# from pdfminer.pdftype import PDFObjRef, resolver1
+import os
 
-fp = open("./Books/[Michael_Dawson]_Beginning_C++_through_game_progra(BookZZ.org).pdf", 'rb')
-parser = PDFParser(fp)
-doc = PDFDocument(parser)
+#adds all the books to a list
+folderpath = r"./Books"
+filepaths = [os.path.join(folderpath,name) for name in os.listdir(folderpath)]
+all_files = []
 
-print(doc.info)
+#loops through the list and prints metadata for each book
+for path in filepaths:
+    with open(path, 'rb') as fp:
+        parser = PDFParser(fp)
+        doc = PDFDocument(parser)
+        print(doc.info)
 
-title = pdftitle.get_title_from_io(fp)
-print(title)
-# print(type(doc.info))
-# print(doc.info[0]['Title'])
