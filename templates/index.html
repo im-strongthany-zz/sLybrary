@@ -18,7 +18,7 @@
     </p>
     
     {% from "_formhelpers.html" import render_field %}
-    <form method=post action="/results" enctype="multipart/form-data">
+    <form method=post action="/" enctype="multipart/form-data">
       <dl>
         {{ render_field(form.select) }}
         <p>

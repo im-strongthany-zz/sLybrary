@@ -2,19 +2,16 @@ from PyPDF2 import PdfFileReader
 import pdftitle
 # import pdfx
 import os
-from pymongo import MongoClient
 import datetime
 import pprint
 from bson.binary import Binary
 from pdf2image import convert_from_path
 from tesserocr import PyTessBaseAPI, iterate_level, RIL
+import gridfs
 
 # folderpath = r"./books"
 # filepaths = [os.path.join(folderpath,name) for name in os.listdir(folderpath)]
 # create a variable for the database
-client = MongoClient("mongodb+srv://admin:openSourceTextbooks@slybrary-jbhct.gcp.mongodb.net/test?retryWrites=true&w=majority")
-db = client["sLybrary"]
-collection = db['test_books']
 temp_file = ".temp_frontpage.jpg"
 
 def extractTitle(fp, pdf, page):
@@ -72,7 +69,7 @@ def orcTitle(path):
         os.remove(temp_file)
         return title
         
-def pdfToMongo(path):
+def pdfToMongo(path, collection):
     # print filepath
     print(path)
 
