@@ -12,8 +12,3 @@ for path in filepaths:
         doc = PDFDocument(parser)
         print(doc.info)
 
-#fp = open("./Books/Linux-101-Hacks.pdf", "rb")
-#parser = PDFParser(fp)
-#doc = PDFDocument(parser)
-
-#print(doc.info)
