@@ -67,6 +67,8 @@ def orcTitle():
 
         # concatenate them back together
         title = ' '.join(title_list)
+
+        os.remove(temp_file)
         return title
     
 
