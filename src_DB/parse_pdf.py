@@ -27,6 +27,7 @@ for path in filepaths:
             # make sure first page can be text processed
             # by checking if it has a font
             page_data = pdf.getPage(0)
+            print(page_data['/Resources'])
             if '/Font' in page_data['/Resources']:
                 # process title using pdftitle by examining first page
                 title = pdftitle.get_title_from_io(fp)

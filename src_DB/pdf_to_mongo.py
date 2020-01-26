@@ -12,8 +12,8 @@ filepaths = [os.path.join(folderpath,name) for name in os.listdir(folderpath)]
 
 # create a variable for the database
 client = MongoClient("mongodb+srv://admin:openSourceTextbooks@slybrary-jbhct.gcp.mongodb.net/test?retryWrites=true&w=majority")
-db = client["MinneHack2020"]
-collection = db['sLybrary']
+db = client["sLybrary"]
+collection = db['test_books']
 
 # extract the metadata from the pdf object
 # extract the references from the pdf
@@ -64,20 +64,19 @@ for path in filepaths:
             else:
                 print("\tTITLE: (none extracted)")
 
-                post = {
-                    "title": title,
-                    "import_date": datetime.datetime.utcnow(),
-                    "tags": ["pdf"]
-                }
+            post = {
+                "title": title,
+                "import_date": datetime.datetime.utcnow(),
+                "tags": ["pdf"]
+            }
 
-                # create an object for your PDF data, then insert it into the database
-                posts = db.posts
-                post_id = posts.insert_one(post).inserted_id
+            # create an object for your PDF data, then insert it into the database
+            post_id = collection.insert_one(post).inserted_id
 
-                # now check the output for your new MongoDB document
-                # pprint.pprint(posts.find_one())  # search with dict keys or "_id" for Mongo UID
-
-                db.list_collection_names()
+            # now check the output for your new MongoDB document
+            # pprint.pprint(posts.find_one())  # search with dict keys or "_id" for Mongo UID
+            # print(client.list_database_names())
+            # print(db.list_collection_names())
 
         else:
             print("\tTitle: Cannot parse text on first page")
